@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="Pontoon.js"></script>
+    <title>Pontoon</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <h1>Welcome to Pontoon!</h1>
+    <p> So you want to play but have no cards. Never Fear!</p>
+    <p> Dont know Pontoon? Learn about the game <a href="https://en.wikipedia.org/wiki/Pontoon_(card_game)">here</a></p><p>Simply Press below to draw a card from a randomly shuffled deck. The card number will be shown and the rule displayed with it.</p>
+    <div id="game-window">
+        <!-- <h2 id = "deckCount">52 Cards Remaining</h2> -->
+        <div class = "card hand" id = "CPU-Hand" style="background-position:0px 160px"></div>
+        <div class = "card deck" id = "Deck"style="background-position:0px 160px"></div>
+        <div class = "card hand" id = "Player-Hand"style="background-position:0px 160px"></div>
+        <!-- <h1 id = "card">Your Card</h1> -->
+        <h2 id = "rule"><br></h2>
+        <button id="draw" onclick="drawCard()">Hit</button>
+        <button id="reset-deck" onclick="resetDeck()">Stick</button>
+    </div>
+    <div id="socials">
+        By OwenKDuffy
+    <br>
+        <nobr><a href = "http://owenkduffy.github.io/">My Site</a></nobr>
+        <nobr><a href = "http://www.github.com/OwenKDuffy">My Github</a></nobr>
+        <nobr><a href = "http://www.linkedin.com/in/owenkduffy/">My LinkedIn</a></nobr>
+    <br>
+        <img id="hitsCount" src="https://hitcounter.pythonanywhere.com/count/tag.svg" alt="Hits">
+    </div>
+</body>
+</html>

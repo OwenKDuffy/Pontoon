@@ -1,0 +1,57 @@
+body {
+    text-align: center;
+    background-color: #FFEFD3;
+    width: 70%;
+    height: 100%;
+    margin: 40px auto;
+    max-width:650px;
+    line-height:1.6;
+    font-size:18px;
+    color:#363537;
+    padding:0
+}
+h1,h2,h3 {
+    line-height: 1.2
+}
+
+div {
+    position: relative;
+    width: 60%;
+    max-width: 450px;
+    border: 1px solid #7E846Baa;
+    padding: 50px;
+    margin: 0 auto;
+}
+
+label[for="King"], #King{
+    display: none;
+}
+
+div[id="game-window"] button {
+    margin: 15px;
+    display: inline-block;
+}
+button {
+    min-width: 150px;
+    min-height: 30px;
+    width: fit-content;
+    height: fit-content;
+    font-size: 18px;
+    padding: 5px;
+}
+#hitsCount {
+    padding-top: 15px;
+}
+.deck{
+    float:right;
+}
+.hand{
+    float:left;
+}
+.card {
+    width: 40px;
+    height: 58px;
+    position: relative;
+    background-image: url("WZ9Od.gif");
+    background-size: 1300% 500%;
+}
