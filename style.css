@@ -16,10 +16,10 @@ h1,h2,h3 {
 
 div {
     position: relative;
-    width: 60%;
+    width: 100%;
     max-width: 450px;
     border: 1px solid #7E846Baa;
-    padding: 50px;
+    /* padding: 50px; */
     margin: 0 auto;
 }
 
@@ -29,7 +29,7 @@ label[for="King"], #King{
 
 div[id="game-window"] button {
     margin: 15px;
-    display: inline-block;
+    /* display: inline-block; */
 }
 button {
     min-width: 150px;
@@ -42,16 +42,48 @@ button {
 #hitsCount {
     padding-top: 15px;
 }
-.deck{
-    float:right;
+#game-window {
+    height: auto;
+    padding: 25px 0px;
 }
-.hand{
-    float:left;
+#GameStart {
+    z-index: 4;
+    margin: 0 auto;
+}
+.button-wrapper {
+    z-index: 2;
+    display: table-cell;
+    vertical-align: middle;
+    margin: 0 auto;
+    text-align: center;
+}
+.hand {
+    text-align: left;
+    margin-left: 25px;
+    position: relative;
+    width: 100%;
+    border: none;
+}
+.deck {
+    /* margin-top: 80px; */
+    margin-right: 25px;
+    margin-left: auto !important;
+}
+.coveredCard {
+    width: 49px !important;
+    margin-right: : 0px;
+}
+.playerControls {
+    display: none;
 }
 .card {
-    width: 40px;
-    height: 58px;
+    /* float: left; */
+    margin-left: 0px;
+    width: 140px;
+    height: 158px;
     position: relative;
     background-image: url("WZ9Od.gif");
-    background-size: 1300% 500%;
+    background-size: 1820px 790px;
+    display: inline-block;
+    border: none;
 }

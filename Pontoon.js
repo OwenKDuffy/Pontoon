@@ -5,10 +5,117 @@ var suits = {0: "\u2665",
 3: "\u2660"
 };
 //0:hearts 1:diamonds 2:clubs 3:spades
+var deck = [];
+var cpuHand = [];
+var playerHand = [];
+var hands = [cpuHand, playerHand];
+var cpuStick = false;
+var playerStick = false;
 
-var deck = setDeck();
-kingsCount = 0;
+function startGame() {
+    deck = setDeck();
+    for(i = 0; i < 2; i++){
+        cpuHand.push(drawCard())
+        playerHand.push(drawCard())
+    }
+    document.getElementById("CPU-Hand").children[0].style.backgroundPosition = getCardImage(cpuHand[0]);
+    document.getElementById("Player-Hand").children[0].style.backgroundPosition = getCardImage(playerHand[0]);
+    dealCard(0);
+    dealCard(1);
+    document.getElementById("GameStart").style.display = "none";
+    document.getElementById("Hit").style.display = "inline-block";
+    document.getElementById("Stick").style.display = "inline-block";
+}
 
+function dealCard(handID) {
+    var handString;
+    if(handID == 0){
+        handString = "CPU";
+    } else {
+        handString = "Player";
+    }
+    var handVar = hands[handID];
+    var hand = document.getElementById(handString + "-Hand");
+    var cards = hand.children;
+    newCard = cards[cards.length - 1].cloneNode(true);
+    cards[cards.length - 1].classList.add("coveredCard");
+    var newId = handString + "card" + (cards.length);
+    newCard.setAttribute('id', newId);
+    hand.appendChild(newCard);
+    document.getElementById(newId).style.zIndex = "1";
+    document.getElementById(newId).style.backgroundPosition = getCardImage(handVar[handVar.length - 1]);
+}
+function playerHit(){
+    playerHand.push(drawCard())
+    dealCard(1);
+    document.getElementById("turn").innerHTML = "CPU's Turn";
+    cpuPlay();
+}
+function cpuPlay() {
+    var handTotal = 0;
+    for(var i = 0; i < cpuHand.length; i++){
+        handTotal += (cpuHand[i] % 13) + 1;
+    }
+    setTimeout(1000);
+    if (handTotal < 17) {
+        cpuHand.push(drawCard());
+        dealCard(0);
+    }
+    else if (handTotal > 19) {
+        cpuStick = true;
+    }
+    else {
+        if(Math.random() < 0.5){
+            cpuHand.push(drawCard());
+            dealCard(0);
+        }
+        else {
+            cpuStick = true;
+        }
+    }
+    if (playerStick && !cpuStick){
+        cpuPlay();
+    }
+    else if (playerStick && cpuStick){
+        endRound();
+    }
+    document.getElementById("turn").innerHTML = "Your Turn";
+}
+function endRound() {
+    console.log("Round Over");
+    var cpuHandTotal = 0;
+    var playerHandTotal = 0;
+    cpuHandTotal = countHand(cpuHand);
+    playerHandTotal = countHand(playerHand);
+    console.log("Cpu " + cpuHandTotal);
+    console.log("player " + playerHandTotal);
+    if(cpuHandTotal <= 21 && playerHandTotal <= 21){
+        if (playerHandTotal > cpuHandTotal){
+            document.getElementById("turn").innerHTML = "You Win";
+            console.log("You Win");
+        }else if (playerHandTotal < cpuHandTotal){
+            document.getElementById("turn").innerHTML = "CPU Wins";
+            console.log("CPU Win");
+        }else {
+            document.getElementById("turn").innerHTML = "Draw";
+            console.log("Draw Evens");
+        }
+    }else if(cpuHandTotal > 21 && playerHandTotal <= 21){
+        document.getElementById("turn").innerHTML = "You Win";
+        console.log("You Win CPU Bust");
+    }else if(cpuHandTotal <= 21 && playerHandTotal > 21){
+        document.getElementById("turn").innerHTML = "CPU Wins";
+        console.log("CPU Win Player Bust");
+    }else {
+        document.getElementById("turn").innerHTML = "Draw";
+        console.log("Draw Double Bust");
+    }
+}
+
+function playerHold(){
+    playerStick = true;
+    cpuPlay();
+}
 function resetDeck(){
     deck = setDeck();
     document.getElementById("deckCount").innerHTML = "" + deck.length +  " Cards Remaining";
@@ -34,18 +141,6 @@ function shuffle(deck) {
     }
 }
 
-function showRules() {
-    var list = document.getElementById("rulesList");
-    var  displayCurrent = list.style.display;
-    if(displayCurrent == "none"){
-        document.getElementById("showRules").innerHTML = "Collapse Rules";
-        list.style.display = "block";
-    }
-    else if(displayCurrent == "block"){
-        document.getElementById("showRules").innerHTML = "Show Rules";
-        list.style.display = "none"
-    }
-}
 function readRank(card){
     switch(card) {
         case 1:
@@ -60,10 +155,24 @@ function readRank(card){
         return card
     }
 }
-function readRule(card){
-    rank = (card % 13) + 1;
-    return document.getElementById(readRank(rank)).value
-    // return rules[rank];
+function countHand(hand){
+    var handTotal = 0;
+    for(var i = 0; i < hand.length; i++){
+        handTotal += cardValue((hand[i] % 13) + 1);
+    }
+    return handTotal;
+}
+function cardValue(card) {
+    switch(card) {
+        // case 1:
+        // return "Ace"
+        case 11:
+        case 12:
+        case 13:
+        return 10;
+        default:
+        return card
+    }
 }
 function readCard(card){
     rank = (card % 13) + 1
@@ -74,32 +183,14 @@ function readCard(card){
 function getCardImage(drawnCard){
     var rank = (drawnCard % 13)
     var suit = Math.floor(drawnCard / 13);
-    // console.log(rank + " " + suit);
-    var xPos = 180 - (180 * (rank));
-    var yPos = -1 * (160 * suit);
-    // console.log(xPos + " " + yPos);
+    var xPos = 140 - (140 * (rank));
+    var yPos = -1 * (158 * suit);
     var outputString = "" + xPos + "px " + yPos + "px";
-    // console.log(outputString);
     return outputString;
 }
 function drawCard(){
     if(deck.length > 0){
         drawnCard = deck.shift();
-        if((drawnCard % 13) + 1 == 13){
-            kingsCount++;
-        }
-        document.getElementById("card").style.backgroundPosition = "" + getCardImage(drawnCard);
-        document.getElementById("card").alt = "" + readCard(drawnCard);
-        document.getElementById("deckCount").innerHTML = "" + deck.length +  " Cards Remaining";
-        if((drawnCard % 13) + 1 == 13 && kingsCount == 4){
-            document.getElementById("rule").innerHTML = "KINGS CUP!!!";
-            // document.getElementById("draw").style.display = "hidden";
-        }
-        else {
-            document.getElementById("rule").innerHTML = "" + readRule(drawnCard);
-        }
-    }
-    if(deck.length == 0){
-        document.getElementById("draw").style.display = "none";
+        return drawnCard;
     }
 }

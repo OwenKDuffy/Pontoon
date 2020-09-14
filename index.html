@@ -11,24 +11,31 @@
     <h1>Welcome to Pontoon!</h1>
     <p> So you want to play but have no cards. Never Fear!</p>
     <p> Dont know Pontoon? Learn about the game <a href="https://en.wikipedia.org/wiki/Pontoon_(card_game)">here</a></p><p>Simply Press below to draw a card from a randomly shuffled deck. The card number will be shown and the rule displayed with it.</p>
-    <div id="game-window">
-        <!-- <h2 id = "deckCount">52 Cards Remaining</h2> -->
-        <div class = "card hand" id = "CPU-Hand" style="background-position:0px 160px"></div>
-        <div class = "card deck" id = "Deck"style="background-position:0px 160px"></div>
-        <div class = "card hand" id = "Player-Hand"style="background-position:0px 160px"></div>
-        <!-- <h1 id = "card">Your Card</h1> -->
-        <h2 id = "rule"><br></h2>
-        <button id="draw" onclick="drawCard()">Hit</button>
-        <button id="reset-deck" onclick="resetDeck()">Stick</button>
+    <div>
+        <div id="game-window">
+            <!-- <h2 id = "deckCount">52 Cards Remaining</h2> -->
+            <div class="hand" id = "CPU-Hand">
+                <div class = "card" style="background-position:0px 158px"></div>
+            </div>
+            <div class = "card deck" id = "Deck" style="background-position:0px 158px"></div>
+            <div class="hand" id = "Player-Hand">
+                <div class = "card" style="background-position:0px 158px"></div>
+            </div>
+            <h1 id = "turn">Your Turn</h1>
+            <button id = "GameStart" type="button" onclick="startGame()">Start Game</button>
+            <button class = "playerControls" id="Hit" onclick="playerHit()">Hit</button>
+            <button class = "playerControls" id="Stick" onclick="playerHold()">Stick</button>
+        </div>
     </div>
-    <div id="socials">
-        By OwenKDuffy
+</div>
+<div id="socials">
+    By OwenKDuffy
     <br>
-        <nobr><a href = "http://owenkduffy.github.io/">My Site</a></nobr>
-        <nobr><a href = "http://www.github.com/OwenKDuffy">My Github</a></nobr>
-        <nobr><a href = "http://www.linkedin.com/in/owenkduffy/">My LinkedIn</a></nobr>
+    <nobr><a href = "http://owenkduffy.github.io/">My Site</a></nobr>
+    <nobr><a href = "http://www.github.com/OwenKDuffy">My Github</a></nobr>
+    <nobr><a href = "http://www.linkedin.com/in/owenkduffy/">My LinkedIn</a></nobr>
     <br>
-        <img id="hitsCount" src="https://hitcounter.pythonanywhere.com/count/tag.svg" alt="Hits">
-    </div>
+    <!-- <img id="hitsCount" src="https://hitcounter.pythonanywhere.com/count/tag.svg" alt="Hits"> -->
+</div>
 </body>
 </html>
