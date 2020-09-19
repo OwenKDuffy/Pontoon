@@ -1,120 +1,154 @@
-
 var suits = {0: "\u2665",
 1: "\u2666",
 2: "\u2663",
 3: "\u2660"
 };
 //0:hearts 1:diamonds 2:clubs 3:spades
-var deck = [];
+var deck;
 var cpuHand = [];
 var playerHand = [];
-var hands = [cpuHand, playerHand];
-var cpuStick = false;
-var playerStick = false;
+var playerStick;
+var cpuStick;
+var playerBust;
+var cpuBust;
+var hands = [];
+hands["CPU"] = cpuHand;
+hands["Player"] = playerHand;
 
 function startGame() {
+    // var ai = new gameAI();
     deck = setDeck();
+    cpuHand.length = 0;
+    playerHand.length = 0;
+    playerStick = false;
+    cpuStick = false;
+    playerBust = false;
+    cpuBust = false;
+    document.getElementById("CPU-Hand").innerHTML = "";
+    document.getElementById("Player-Hand").innerHTML = "";
     for(i = 0; i < 2; i++){
-        cpuHand.push(drawCard())
-        playerHand.push(drawCard())
+        cpuHand.push(drawCard());
+        dealCard("CPU");
+        playerHand.push(drawCard());
+        dealCard("Player");
     }
-    document.getElementById("CPU-Hand").children[0].style.backgroundPosition = getCardImage(cpuHand[0]);
-    document.getElementById("Player-Hand").children[0].style.backgroundPosition = getCardImage(playerHand[0]);
-    dealCard(0);
-    dealCard(1);
     document.getElementById("GameStart").style.display = "none";
     document.getElementById("Hit").style.display = "inline-block";
     document.getElementById("Stick").style.display = "inline-block";
+    document.getElementById("turn").innerHTML = "Your Turn";
 }
 
-function dealCard(handID) {
-    var handString;
-    if(handID == 0){
-        handString = "CPU";
-    } else {
-        handString = "Player";
-    }
-    var handVar = hands[handID];
+function dealCard(handString) {
+    var handVar = hands[handString];
     var hand = document.getElementById(handString + "-Hand");
     var cards = hand.children;
-    newCard = cards[cards.length - 1].cloneNode(true);
-    cards[cards.length - 1].classList.add("coveredCard");
+    if(cards.length != 0){
+        newCard = cards[cards.length - 1].cloneNode(true);
+        cards[cards.length - 1].classList.add("coveredCard");
+    }
+    else {
+        newCard = document.createElement("div");
+        newCard.classList.add("card");
+        // newCard.style.backgroundPosition = "0px 158px";
+        // newCard.innerHTML = '<div class = "card" style="background-position:0px 158px"></div>'
+    }
     var newId = handString + "card" + (cards.length);
     newCard.setAttribute('id', newId);
     hand.appendChild(newCard);
-    document.getElementById(newId).style.zIndex = "1";
-    document.getElementById(newId).style.backgroundPosition = getCardImage(handVar[handVar.length - 1]);
+    // console.log(`${handString} ${readCard(handVar[handVar.length - 1])}`);
+    // document.getElementById(newId).style.zIndex = "1";
+    if(handString === "Player"){
+        document.getElementById(newId).style.backgroundPosition = getCardImage(handVar[handVar.length - 1]);
+    }
+    else{
+        document.getElementById(newId).style.backgroundPosition = "0px 158px";
+    }
 }
-function playerHit(){
-    playerHand.push(drawCard())
-    dealCard(1);
-    document.getElementById("turn").innerHTML = "CPU's Turn";
-    cpuPlay();
-}
-function cpuPlay() {
-    var handTotal = 0;
-    for(var i = 0; i < cpuHand.length; i++){
-        handTotal += (cpuHand[i] % 13) + 1;
-    }
-    setTimeout(1000);
-    if (handTotal < 17) {
-        cpuHand.push(drawCard());
-        dealCard(0);
-    }
-    else if (handTotal > 19) {
-        cpuStick = true;
-    }
-    else {
-        if(Math.random() < 0.5){
+
+function cpuPlay(playToFinish) {
+    do{
+        var handTotal = countHand(cpuHand);
+        if (handTotal < 17) {
             cpuHand.push(drawCard());
-            dealCard(0);
+            dealCard("CPU");
         }
-        else {
+        else if (handTotal > 19) {
             cpuStick = true;
         }
+        else if (handTotal > 21) {
+            cpuStick = true;
+            cpuBust  = true;
+            return;
+        }
+        else {
+            if(Math.random() < ((21 - handTotal) * 0.1)){
+                cpuHand.push(drawCard());
+                dealCard("CPU");
+            }
+            else {
+                cpuStick = true;
+            }
+        }
     }
-    if (playerStick && !cpuStick){
-        cpuPlay();
-    }
-    else if (playerStick && cpuStick){
+    while(playToFinish && !cpuStick && !cpuBust);
+    return;
+    // document.getElementById("turn").innerHTML = "Your Turn";
+}
+
+
+function playerHit(){
+    playerHand.push(drawCard())
+    dealCard("Player");
+    if(countHand(playerHand) > 21){
+        playerBust = true;
+        cpuPlay(true);
         endRound();
     }
-    document.getElementById("turn").innerHTML = "Your Turn";
+    // document.getElementById("turn").innerHTML = "CPU's Turn";
+    cpuPlay(false);
 }
+
 function endRound() {
-    console.log("Round Over");
+    //console.log("Round Over");
     var cpuHandTotal = 0;
     var playerHandTotal = 0;
     cpuHandTotal = countHand(cpuHand);
     playerHandTotal = countHand(playerHand);
-    console.log("Cpu " + cpuHandTotal);
-    console.log("player " + playerHandTotal);
+    document.getElementById("CPU-Hand").querySelectorAll("*").forEach(function(item, index) {
+        item.style.backgroundPosition = getCardImage(cpuHand[index]);
+    });
+    //console.log("Cpu " + cpuHandTotal);
+    //console.log("player " + playerHandTotal);
     if(cpuHandTotal <= 21 && playerHandTotal <= 21){
         if (playerHandTotal > cpuHandTotal){
             document.getElementById("turn").innerHTML = "You Win";
-            console.log("You Win");
+            //console.log("You Win");
         }else if (playerHandTotal < cpuHandTotal){
             document.getElementById("turn").innerHTML = "CPU Wins";
-            console.log("CPU Win");
+            //console.log("CPU Win");
         }else {
-            document.getElementById("turn").innerHTML = "Draw";
-            console.log("Draw Evens");
+            document.getElementById("turn").innerHTML = "Draw Evens";
+            //console.log("Draw Evens");
         }
     }else if(cpuHandTotal > 21 && playerHandTotal <= 21){
-        document.getElementById("turn").innerHTML = "You Win";
-        console.log("You Win CPU Bust");
+        document.getElementById("turn").innerHTML = "You Win CPU Bust";
+        //console.log("You Win CPU Bust");
     }else if(cpuHandTotal <= 21 && playerHandTotal > 21){
-        document.getElementById("turn").innerHTML = "CPU Wins";
-        console.log("CPU Win Player Bust");
+        document.getElementById("turn").innerHTML = "CPU Win Player Bust";
+        //console.log("CPU Win Player Bust");
     }else {
-        document.getElementById("turn").innerHTML = "Draw";
-        console.log("Draw Double Bust");
+        document.getElementById("turn").innerHTML = "Draw Double Bust";
+        //console.log("Draw Double Bust");
     }
+    document.getElementById("GameStart").style.display = "inline-block";
+    document.getElementById("Hit").style.display = "none";
+    document.getElementById("Stick").style.display = "none";
 }
 
 function playerHold(){
     playerStick = true;
-    cpuPlay();
+    cpuPlay(true);
+    endRound();
 }
 function resetDeck(){
     deck = setDeck();
